@@ -1,0 +1,2 @@
+# splitflap
+terminal splitflap emulator
