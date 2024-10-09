@@ -1,0 +1,10 @@
+
+# directories
+
+build/
+bin/
+
+
+# system files
+
+.DS_Store
