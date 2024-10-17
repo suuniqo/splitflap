@@ -26,13 +26,20 @@ endif
 
 ### targets ###
 
+## src ##
+
 all: dir $(NAME)
 
 $(NAME): $(OBJS) dir
 	@$(CC) $(CFLAGS) $(OBJS) -o $(BIN_DIR)/$@
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c dir
-	@$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< sorter/wordsorter.c -o $@
+
+## sorter ##
+
+sorter: dir
+	@$(CC) $(CFLAGS) src/charset/alphabet.c src/error/die.c sorter/wordsorter.c -o $(BIN_DIR)/$@
 
 
 ### directory opts ###

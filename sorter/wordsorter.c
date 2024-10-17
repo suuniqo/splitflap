@@ -95,7 +95,7 @@ void free_word_arr(char **word_arr, int lines) {
     free(word_arr);
 }
 
-int main() {
+int main(void) {
 
     FILE *word_list;
     if ((word_list = fopen(FILE_PATH_WORDLIST, "r")) == NULL)
