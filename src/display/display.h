@@ -4,14 +4,15 @@
 
 /*** defines ***/
 
-#define SPLITFLAP_WIDTH 1
-
 #define MIN_DISPLAY_LEN 5
-#define MAX_DISPLAY_LEN 32
+#define MAX_DISPLAY_LEN 64
+
+#define MIN_DISPLAY_HEIGHT 1
+#define MAX_DISPLAY_HEIGHT 64
 
 #define DEFAULT_FLIP_DELAY 15000
 
-#define DEFAULT_PADDING 'r'
+#define DEFAULT_PADDING 'c'
 
 
 /*** data ***/
@@ -27,7 +28,6 @@ typedef enum {
     MODE_END = '\0'
 } display_mode_t;
 
-
 typedef enum {
     PADDING_RIGHT = 'r',
     PADDING_CENTER = 'c',
@@ -37,7 +37,7 @@ typedef enum {
 
 /*** display init ***/
 
-extern void display_make(int length, int flip_delay, padding_t padding, char *charset);
+extern void display_make(unsigned length, unsigned height, unsigned flip_delay, padding_t padding, char *charset);
 
 
 /*** display getters ***/
@@ -46,6 +46,7 @@ extern char *display_get_state(void);
 extern char display_get_mode(void);
 
 extern int display_get_length(void);
+extern int display_get_height(void);
 extern int display_get_delay(void);
 
 

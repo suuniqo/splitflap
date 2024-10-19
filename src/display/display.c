@@ -15,6 +15,7 @@
 
 typedef struct display_conf {
     unsigned length;
+    unsigned height;
     unsigned flip_delay;
     char padding;
 } display_conf_t;
@@ -40,10 +41,10 @@ void display_free(void) {
     free(splitflap);
 }
 
-void display_make(int length, int flip_delay, padding_t padding, char *charset) {
-    char buff[length + 1];
-    buff[length] = '\0';
-    memset(buff, ' ', length);
+void display_make(unsigned length, unsigned height, unsigned flip_delay, padding_t padding, char *charset) {
+    char buff[length * height + 1];
+    memset(buff, ' ', length * height);
+    buff[length * height] = '\0';
 
     splitflap = malloc(sizeof(display_t));
 
@@ -53,6 +54,7 @@ void display_make(int length, int flip_delay, padding_t padding, char *charset) 
         .mode = MODE_DEFAULT,
         .conf = (display_conf_t) {
             .length = length,
+            .height = height,
             .flip_delay = flip_delay,
             .padding = padding
         }
@@ -62,7 +64,7 @@ void display_make(int length, int flip_delay, padding_t padding, char *charset) 
 }
 
 
-/*** dispaca getters ***/
+/*** display getters ***/
 
 char *display_get_state(void) {
     return splitflap->state;
@@ -74,6 +76,9 @@ char display_get_mode(void) {
 
 int display_get_length(void) {
     return splitflap->conf.length;
+}
+int display_get_height(void) {
+    return splitflap->conf.height;
 }
 
 int display_get_delay(void) {
@@ -89,25 +94,26 @@ char *__display_get_target(void) {
 
 void display_set_target(const char* target) {
     unsigned target_len = strlen(target);
+    unsigned padding_len = (splitflap->conf.length * splitflap->conf.height) - target_len ;
 
-    char padding[splitflap->conf.length + 1];
-    memset(padding, ' ', splitflap->conf.length - target_len);
-    padding[splitflap->conf.length - target_len] = '\0';
+    char padding[padding_len + 1];
+    memset(padding, ' ', padding_len);
+    padding[padding_len] = '\0';
 
-    unsigned padding_len = strlen(padding);
     unsigned padding_div;
+    unsigned middle_row = (splitflap->conf.height / 2) * splitflap->conf.length;
 
     switch (splitflap->conf.padding) {
         case 'l':
-            padding_div = padding_len;
+            padding_div = middle_row + splitflap->conf.length - target_len;
             break;
         case 'c':
-            padding_div = padding_len / 2;
+            padding_div = middle_row + (splitflap->conf.length - target_len) / 2;
             break;
         case 'r':
-            padding_div = 0;
+            padding_div = middle_row;
     }
-    snprintf(splitflap->target, splitflap->conf.length + 1, "%.*s%s%.*s",
+    snprintf(splitflap->target, splitflap->conf.length * splitflap->conf.height + 1, "%.*s%s%.*s",
             padding_div, padding, target, padding_len - padding_div, padding);
 }
 
@@ -130,7 +136,7 @@ void display_set_mode(display_mode_t mode) {
 /*** dispaca methods ***/
 
 void display_update_state(void) {
-    for (unsigned i = 0; i < splitflap->conf.length; i++) {
+    for (unsigned i = 0; i < splitflap->conf.length * splitflap->conf.height; i++) {
         if (splitflap->state[i] != splitflap->target[i]) {
             splitflap->state[i] = get_next_char(splitflap->state[i]);
         }

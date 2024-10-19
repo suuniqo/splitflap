@@ -34,7 +34,7 @@ $(NAME): $(OBJS) dir
 	@$(CC) $(CFLAGS) $(OBJS) -o $(BIN_DIR)/$@
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c dir
-	@$(CC) $(CFLAGS) -c $< sorter/wordsorter.c -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 ## sorter ##
 

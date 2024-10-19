@@ -55,11 +55,13 @@ void update_winsize(void) {
     get_winsize(&term_conf.screenrows, &term_conf.screencols);
 }
 
-void check_window_updates(void) {
+int check_window_updates(void) {
     if (winch_flag) {
         update_winsize();
         winch_flag = 0;
+        return 1;
     }
+    return 0;
 }
 
 
@@ -85,13 +87,17 @@ void pause_screen(int TIME) {
 
 /*** terminal io ***/
 
-void print_centered(const char *str, int length, int width) {
-    check_window_updates();
-    int center_row = round((term_conf.screenrows - width) / 2.0) + 1;
+void print_centered(const char *str, unsigned length, unsigned height) {
+    if (check_window_updates())
+        printf("%s", CLEAR_SCREEN);
+
+    int center_row = round((term_conf.screenrows - height) / 2.0) + 1;
     int center_col = round((term_conf.screencols - length) / 2.0) + 1;
 
-    printf("\x1b[%d;%dH%s%s%s",
-            center_row, center_col, CLEAR_FROM_START, str, CLEAR_TO_END);
+    for (unsigned i = 0; i < height; ++i) {
+        printf("\x1b[%d;%dH%s%.*s%s",
+                center_row + i, center_col, CLEAR_LEFT, length, str + i * length, CLEAR_RIGHT);
+    }
 }
 
 char read_char(void) {

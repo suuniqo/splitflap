@@ -10,7 +10,7 @@ extern void setup_terminal(void);
 
 /*** methods ***/
 
-extern void print_centered(const char *str, int length, int width);
+extern void print_centered(const char *str, unsigned length, unsigned height);
 extern void pause_screen(int TIME);
 extern char read_char(void);
 
