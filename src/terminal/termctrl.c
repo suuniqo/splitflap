@@ -95,8 +95,8 @@ void print_centered(const char *str, unsigned length, unsigned height) {
     int center_col = round((term_conf.screencols - length) / 2.0) + 1;
 
     for (unsigned i = 0; i < height; ++i) {
-        printf("\x1b[%d;%dH%s%.*s%s",
-                center_row + i, center_col, CLEAR_LEFT, length, str + i * length, CLEAR_RIGHT);
+        printf("\x1b[%d;%dH%.*s",
+                center_row + i, center_col, length, str + i * length);
     }
 }
 
