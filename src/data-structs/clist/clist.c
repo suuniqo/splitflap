@@ -15,6 +15,7 @@
 /*** defines ***/
 
 #define FILE_PATH_WORDLIST "assets/wordlist.txt"
+#define FILE_PATH_DATELIST "assets/datelist.txt"
 
 #define MAX_LINE_LEN 32
 #define MAX_LIST_LEN 32768
@@ -80,11 +81,11 @@ void clist_make(unsigned long max_len) {
 
 /*** clist getters ***/
 
-extern int clist_get_len(void) {
+int clist_get_len(void) {
     return clist->len;
 }
 
-extern char *clist_get_word(void) {
+char *clist_get_word(void) {
     return clist->cursor->word;
 }
 
