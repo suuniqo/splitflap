@@ -7,6 +7,7 @@
 #include <time.h>
 
 #include "../display/display.h"
+#include "../conversions/conversions.h"
 #include "../data-structs/clist/clist.h"
 #include "../error/die.h"
 
@@ -75,34 +76,28 @@ void mode_time(display_mode_t mode) {
     struct tm *date;
 
     char *format;
-    char time_buff[display_get_length() + 1];
+    unsigned display_len = display_get_length();
+    char time_buff[display_len + 1];
 
     time(&epoch_time);
     date = localtime(&epoch_time);
 
     switch (mode) {
         case MODE_TIME:
-            if (display_get_length() < 8)
-                format = "%H:%M";
-            else
-                format = "%H:%M:%S";
+            format = display_len < 8 ? "%R" : "%T";
             break;
         case MODE_DAY:
-            format = "%a%d";
-            for (int i = 1; i < 3; i++) time_buff[i] -= 32;
+            format = display_len < 10 ? "%a%d" : "%A %d";
             break;
         case MODE_DATE:
-            format = "%d/%m";
+            format = display_len < 7 ? "%d/%m" : "%D"; 
             break;
         default:
             die("mode doesn't exist");
     }
 
-    strftime(time_buff, display_get_length(), format, date);
-    if (mode == MODE_DAY) {
-        time_buff[1] = toupper(time_buff[1]);
-        time_buff[2] = toupper(time_buff[2]);
-    }
+    strftime(time_buff, display_len, format, date);
+    str_toupper(time_buff);
 
     display_set_target(time_buff);
 }
