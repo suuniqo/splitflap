@@ -6,7 +6,7 @@
 /*** methods ***/
 
 extern void process_mode(char mode);
-extern void match_mode(void);
+extern void match_mode(char padding_type);
 
 
 #endif

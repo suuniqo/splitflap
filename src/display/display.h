@@ -11,8 +11,8 @@
 #define MAX_DISPLAY_HEIGHT 64
 
 #define DEFAULT_FLIP_DELAY 15000
-
-#define DEFAULT_PADDING 'c'
+#define DEFAULT_PADDING_TYPE 'c'
+#define DEFAULT_ALPHABET " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 
 /*** data ***/
@@ -37,7 +37,7 @@ typedef enum {
 
 /*** display init ***/
 
-extern void display_make(unsigned length, unsigned height, unsigned flip_delay, padding_t padding, char *charset);
+extern void display_make(unsigned length, unsigned height, unsigned flip_delay, char *charset);
 
 
 /*** display getters ***/
@@ -52,7 +52,7 @@ extern int display_get_delay(void);
 
 /*** display setters ***/
 
-extern void display_set_target(const char* target);
+extern void display_set_target(const char* target, char padding_type);
 extern void display_set_mode(display_mode_t mode);
 
 
@@ -61,6 +61,7 @@ extern void display_set_mode(display_mode_t mode);
 extern void display_update_state(void);
 extern int display_check_status(void);
 extern void display_terminate(void);
+extern void display_print(void);
 
 
 #endif

@@ -1,4 +1,5 @@
 
+
 /*** includes ***/
 
 #include <math.h>
@@ -11,7 +12,7 @@
 #include "termos/termos.h"
 #include "../error/die.h"
 
-#include "termctrl.h"
+#include "view.h"
 
 
 /*** state ***/
@@ -79,13 +80,8 @@ void setup_screen(void) {
     atexit(reset_screen);
 }
 
-void pause_screen(int TIME) {
-   fflush(stdout);
-   usleep(TIME);
-}
 
-
-/*** terminal io ***/
+/*** methods ***/
 
 void print_centered(const char *str, unsigned length, unsigned height) {
     if (check_window_updates())
@@ -100,15 +96,10 @@ void print_centered(const char *str, unsigned length, unsigned height) {
     }
 }
 
-char read_char(void) {
-    char c = 0;
-
-    if ((read(STDIN_FILENO, &c, 1)) == -1)
-        die("couldnt read from stdin");
-
-    return c;
+void pause_screen(int TIME) {
+   fflush(stdout);
+   usleep(TIME);
 }
-
 
 /*** setup ***/
 

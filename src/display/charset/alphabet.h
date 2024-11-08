@@ -3,10 +3,6 @@
 #define ALPHABET_H
 
 
-/*** defines ***/
-
-#define DEFAULT_ALPHABET " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-
 
 /*** init ***/
 

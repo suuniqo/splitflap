@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-#include "../terminal/termgui/termgui.h"
+#include "../view/termgui/termgui.h"
 
 #include "die.h"
 

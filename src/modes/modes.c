@@ -1,9 +1,7 @@
 
 /*** includes **/
 
-#include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
 #include <time.h>
 
 #include "../display/display.h"
@@ -17,11 +15,6 @@
 /*** defines ***/
 
 #define MATCH_DELAY 150
-
-#define FORMAT_TIME_REDUCED "%R"
-#define FORMAT_TIME_FULL "%T"
-
-#define FORMAT_DATE_REDUCED "%H%M%S"
 
 
 /*** process mode ***/
@@ -47,7 +40,7 @@ void process_mode(char mode) {
 
 /*** modes ***/
 
-void mode_word(display_mode_t mode) {
+char *mode_word(display_mode_t mode) {
     static int count = MATCH_DELAY;
 
     if (display_check_status() && !count--) {
@@ -68,16 +61,16 @@ void mode_word(display_mode_t mode) {
 
         count = MATCH_DELAY;
     }
-    display_set_target(clist_get_word());
+    return clist_get_word();
 }
 
-void mode_time(display_mode_t mode) {
+char *mode_time(display_mode_t mode) {
     time_t epoch_time;
     struct tm *date;
 
     char *format;
     unsigned display_len = display_get_length();
-    char time_buff[display_len + 1];
+    static char time_buff[MAX_DISPLAY_LEN + 1];
 
     time(&epoch_time);
     date = localtime(&epoch_time);
@@ -99,42 +92,43 @@ void mode_time(display_mode_t mode) {
     strftime(time_buff, display_len, format, date);
     str_toupper(time_buff);
 
-    display_set_target(time_buff);
+    return time_buff;
 }
 
-void mode_quit(void) {
+char *mode_quit(void) {
     static int count = MATCH_DELAY;
-    display_set_target("ABORT");
 
     if (display_check_status() && !count--) {
         display_terminate();
     }
+
+    return "ABORT";
 }
 
-void mode_default(void) {
-    display_set_target("INPUT");
+char *mode_default(void) {
+    return "INPUT";
 }
 
 
 /*** mode matcher ***/
 
-void match_mode(void) {
+char *switch_mode(void) {
     display_mode_t mode = display_get_mode();
-
     switch (mode) {
         case MODE_CHAIN:
         case MODE_RAND:
-            mode_word(mode);
-            break;
+            return mode_word(mode);
         case MODE_TIME:
         case MODE_DATE:
         case MODE_DAY:
-            mode_time(mode);
-            break;
+            return mode_time(mode);
         case MODE_QUIT:
-            mode_quit();
-            break;
+            return mode_quit();
         default:
-            mode_default();
+            return mode_default();
     }
+}
+
+void match_mode(char padding_type) {
+    display_set_target(switch_mode(), padding_type);
 }

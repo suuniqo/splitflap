@@ -6,7 +6,8 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "../charset/alphabet.h"
+#include "charset/alphabet.h"
+#include "../view/view.h"
 
 #include "display.h"
 
@@ -17,10 +18,9 @@ typedef struct display_conf {
     unsigned length;
     unsigned height;
     unsigned flip_delay;
-    char padding;
 } display_conf_t;
 
-typedef struct dispaca {
+typedef struct display {
     char *state;
     char *target;
     display_mode_t mode;
@@ -41,7 +41,7 @@ void display_free(void) {
     free(splitflap);
 }
 
-void display_make(unsigned length, unsigned height, unsigned flip_delay, padding_t padding, char *charset) {
+void display_make(unsigned length, unsigned height, unsigned flip_delay, char *charset) {
     char buff[length * height + 1];
     memset(buff, ' ', length * height);
     buff[length * height] = '\0';
@@ -56,10 +56,10 @@ void display_make(unsigned length, unsigned height, unsigned flip_delay, padding
             .length = length,
             .height = height,
             .flip_delay = flip_delay,
-            .padding = padding
         }
     };
     charset_init(charset);
+    setup_terminal();
     atexit(display_free);
 }
 
@@ -92,7 +92,7 @@ char *__display_get_target(void) {
 
 /*** display setters ***/
 
-void display_set_target(const char* target) {
+void display_set_target(const char* target, char padding_type) {
     unsigned target_len = strlen(target);
     unsigned padding_len = (splitflap->conf.length * splitflap->conf.height) - target_len ;
 
@@ -103,15 +103,15 @@ void display_set_target(const char* target) {
     unsigned padding_div;
     unsigned middle_row = (splitflap->conf.height / 2) * splitflap->conf.length;
 
-    switch (splitflap->conf.padding) {
-        case 'l':
+    switch (padding_type) {
+        case PADDING_LEFT:
             padding_div = middle_row + splitflap->conf.length - target_len;
             break;
-        case 'c':
-            padding_div = middle_row + (splitflap->conf.length - target_len) / 2;
-            break;
-        case 'r':
+        case PADDING_RIGHT:
             padding_div = middle_row;
+            break;
+        default:
+            padding_div = middle_row + (splitflap->conf.length - target_len) / 2;
     }
     snprintf(splitflap->target, splitflap->conf.length * splitflap->conf.height + 1, "%.*s%s%.*s",
             padding_div, padding, target, padding_len - padding_div, padding);
@@ -133,7 +133,7 @@ void display_set_mode(display_mode_t mode) {
 }
 
 
-/*** dispaca methods ***/
+/*** display methods ***/
 
 void display_update_state(void) {
     for (unsigned i = 0; i < splitflap->conf.length * splitflap->conf.height; i++) {
@@ -150,4 +150,9 @@ int display_check_status(void) {
 void display_terminate(void) {
     if (splitflap->mode == MODE_QUIT)
         splitflap->mode = MODE_END;
+}
+
+void display_print(void) {
+    print_centered(display_get_state(), display_get_length(), display_get_height());
+    pause_screen(display_get_delay());
 }
