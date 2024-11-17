@@ -47,7 +47,6 @@ int main(int argc, char *argv[]) {
 
     do {
         char c = 0;
-
         if ((read(STDIN_FILENO, &c, 1)) == -1)
             die("couldnt read from stdin");
 

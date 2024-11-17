@@ -33,7 +33,7 @@ typedef struct display {
 static display_t *splitflap;
 
 
-/*** dispaca init ***/
+/*** display init ***/
 
 void display_free(void) {
     free(splitflap->state);
